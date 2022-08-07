@@ -1,0 +1,40 @@
+<div>
+    <input id="Summary" placeholder="Summary" value="{{.Event.Summary}}"/>
+    <input id="Description" placeholder="Description" value="{{.Event.Description}}"/>
+    <input id="ImageLink" placeholder="Image Link" value="{{.Event.ImageLink}}"/>
+    <input id="Price" placeholder="Price" type="number" value="{{.Event.Price}}"/>
+    <input id="DateStart" placeholder="Date Start" type="date" />
+    <input id="TimeStart" placeholder="Time Start" type="time"/>
+    <input id="DateEnd" placeholder="Date End" type="date"/>
+    <input id="TimeEnd" placeholder="Time End" type="time"/>
+    <button onclick="Save()">Save</button>
+</div>
+
+
+<script>
+    //init value
+    document.getElementById("DateStart").value = {{.Event.StartTime}}.substring(0,10)
+    document.getElementById("TimeStart").value = {{.Event.StartTime}}.substring(11,16)
+    document.getElementById("DateEnd").value = {{.Event.EndTime}}.substring(0,10)
+    document.getElementById("TimeEnd").value = {{.Event.EndTime}}.substring(11,16)
+
+    function Save(){
+        let xhr = new XMLHttpRequest();
+        let url = {{.URL}}
+        let id = {{.Event.Id}}
+        xhr.open("PUT", `${url}/events/${id}`);
+        let body = {
+            summary: document.getElementById("Summary").value,
+            description: document.getElementById("Description").value,
+            startTime: document.getElementById("DateStart").value+"T"+document.getElementById("TimeStart").value+":00",
+            endTime: document.getElementById("DateEnd").value+"T"+document.getElementById("TimeEnd").value+":00",
+            price: parseFloat(document.getElementById("Price").value) ,
+            imageLink: document.getElementById("ImageLink").value,
+            calendarId: {{.Event.CalendarId}}
+        }
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(body));
+
+        xhr.onload = () => {console.log(xhr.response)}
+    }
+</script>

@@ -1,0 +1,15 @@
+<div>
+    {{range .Transactions}}
+        <div>
+            <h4>Email:</h4> <p>{{.Email}}</p>
+            <h4>Token:</h4> <p>{{.Token}}</p>
+            <h4>BuyerId:</h4>   <p>{{.BuyerId}}</p>
+            <h4>TransactionID:</h4> <p>{{.TransactionID}}</p>
+            <h4>Amount:</h4>    <p>{{.Amount}}</p>
+            <h4>Date:</h4>  <p>{{.Date}}</p>
+            <h4>Calendar ID:</h4>   <p>{{.CalendarId}}</p>
+
+            -----------
+        </div>
+    {{end}}
+</div>

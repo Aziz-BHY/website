@@ -1,0 +1,28 @@
+<h1>Events:</h1>
+
+{{range .Events}}
+<div>
+    <h4>Summary: </h4><p>{{.Summary}}</p>
+    <h4>Description: </h4><p>{{.Description}}</p>
+    <h4>StartTime: </h4><p>{{.StartTime}}</p>
+    <h4>EndTime: </h4><p>{{.EndTime}}</p>
+    <h4>Price: </h4><p>{{.Price}}</p>
+    <h4>ImageLink: </h4><p>{{.ImageLink}}</p>
+    <button onclick="deleteEvent({{.Id}})">delete</button>
+    <button onclick="updateEvent({{.Id}})">update</button>
+</div>
+{{end}}
+
+<script>
+    function deleteEvent(id){
+        let xhr = new XMLHttpRequest();
+        let url = {{.URL}}
+        xhr.open("DELETE", `${url}/events/${id}`);
+        xhr.send();
+
+        xhr.onload = () => {console.log(xhr.response)}
+    }
+    function updateEvent(id){
+        window.location = "/admin/events/"+id
+    }
+</script>

@@ -1,0 +1,19 @@
+<button onclick="GetCSV()">CSV</button>
+<script>
+    function GetCSV(){
+        let xhr = new XMLHttpRequest();
+        let url = {{.URL}}
+        xhr.open("GET", `${url}/newsletter`);
+        xhr.setRequestHeader("responseType", "blob")
+        xhr.send();
+
+        xhr.onload = () => {
+            const url = window.URL.createObjectURL(new Blob([xhr.response]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'subscription.csv');
+            document.body.appendChild(link);
+            link.click();
+        }
+    }
+</script>

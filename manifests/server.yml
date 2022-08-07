@@ -69,6 +69,9 @@ spec:
               path: COLLECTION_NAME_TRANSACTION
             - key:  COLLECTION_NAME_SUBS
               path: COLLECTION_NAME_SUBS
+            - key:  SERVER_EXTERNAL_URL
+              path: SERVER_EXTERNAL_URL
+              
 ---
 apiVersion: v1
 kind: Service

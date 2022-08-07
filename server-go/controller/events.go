@@ -4,65 +4,78 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 	"website/server/config"
 	"website/server/database"
 	"website/server/models"
+	"website/server/resources"
 
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/api/calendar/v3"
 )
 
 func GetEvents(c *fiber.Ctx) error {
-	myEvents := models.Events{}
-
-	cursor, err := database.EventColl.Find(context.TODO(), bson.M{})
+	events, err := resources.GetEvents(c.Query("q"))
 	if err != nil {
 		return err
 	}
-	if err := cursor.Err(); err != nil {
+	return c.JSON(events.Events)
+}
+
+func DeleteEvent(c *fiber.Ctx) error {
+	// convert id string to ObjectId
+	objectId, err := primitive.ObjectIDFromHex(c.Params("id"))
+	if err != nil {
 		return err
 	}
-	if err = cursor.All(context.TODO(), &myEvents.Events); err != nil {
+	_, err = database.EventColl.DeleteOne(context.TODO(), bson.M{"_id": objectId})
+	if err != nil {
 		return err
 	}
-	cursor.Close(context.TODO())
-	responseEvents := models.Events{}
+	return c.JSON("deleted")
+}
 
-	for index := range myEvents.Events {
-		//Get Event Info from Google API
-		event, err := config.Srv.Events.Get("primary", myEvents.Events[index].CalendarId).Do()
-		if err != nil {
-			return err
-		}
-		if c.Query("q") != "" {
-			if strings.Contains(event.Summary, c.Query("q")) || strings.Contains(event.Description, c.Query("q")) {
-				myEvents.Events[index].Summary = event.Summary
-				myEvents.Events[index].Description = event.Description
-				myEvents.Events[index].StartTime = event.Start.DateTime
-				myEvents.Events[index].EndTime = event.End.DateTime
-				myEvents.Events[index].Summary = event.Summary
-				responseEvents.AddItem(myEvents.Events[index])
-			}
-		} else {
-			myEvents.Events[index].Summary = event.Summary
-			myEvents.Events[index].Description = event.Description
-			myEvents.Events[index].StartTime = event.Start.DateTime
-			myEvents.Events[index].EndTime = event.End.DateTime
-			myEvents.Events[index].Summary = event.Summary
-			responseEvents.AddItem(myEvents.Events[index])
-		}
-
+func UpdateEvent(c *fiber.Ctx) error {
+	//parse event
+	event := new(models.Event)
+	if err := c.BodyParser(event); err != nil {
+		return err
 	}
-	return c.JSON(responseEvents.Events)
+	// convert id string to ObjectId
+	objectId, err := primitive.ObjectIDFromHex(c.Params("id"))
+	if err != nil {
+		return err
+	}
+	//update event (mongo)
+	_, err = database.EventColl.UpdateByID(context.TODO(), objectId, bson.M{
+		"$set": models.Event{Price: event.Price, ImageLink: event.ImageLink},
+	})
+	if err != nil {
+		return err
+	}
+
+	//update event (calendar)
+	_, err = config.Srv.Events.Patch("primary", event.CalendarId, &calendar.Event{
+		Summary:     event.Summary,
+		Description: event.Description,
+		Start: &calendar.EventDateTime{
+			DateTime: event.StartTime,
+			TimeZone: "Africa/Tunis",
+		},
+		End: &calendar.EventDateTime{
+			DateTime: event.EndTime,
+			TimeZone: "Africa/Tunis",
+		},
+	}).Do()
+
+	return c.JSON("updated")
 
 }
 
@@ -112,12 +125,10 @@ func AddAttendee(c *fiber.Ctx) error {
 			log.Fatal(err)
 		}
 		//check if amount is same
-		fmt.Printf("%v", paymeeResp)
-		fmt.Printf("%v", tempEvent.Price)
-
 		if paymeeResp.Data.Amount != tempEvent.Price {
 			return errors.New("Amount is not same, error ")
 		}
+
 		//save transaction
 		_, err = database.TransColl.InsertOne(context.Background(),
 			models.Transaction{

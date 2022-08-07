@@ -3,9 +3,9 @@ module website/server
 go 1.18
 
 require (
-	github.com/gofiber/fiber/v2 v2.35.0
+	github.com/gofiber/fiber/v2 v2.36.0
+	github.com/gofiber/template v1.6.30
 	github.com/google/uuid v1.3.0
-	github.com/joho/godotenv v1.4.0
 	go.mongodb.org/mongo-driver v1.10.0
 	golang.org/x/oauth2 v0.0.0-20220722155238-128564f6959c
 	google.golang.org/api v0.90.0
@@ -14,7 +14,7 @@ require (
 require (
 	cloud.google.com/go/compute v1.7.0 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
-	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.1.0 // indirect
