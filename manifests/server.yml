@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: website-server-deploy
+  namespace: website
+  labels:
+    projectName: website
+spec:
+  strategy: 
+    type: RollingUpdate
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      run: website-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: website-server
+    spec:
+      containers:
+      - name: website-server
+        image: creometry/website:serverV0.1.0
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
+          requests:
+            cpu: "5m"
+            memory: "10Mi"  
+        volumeMounts:
+          - name: credentials-volume
+            mountPath: /app/credentials
+          - name: secret-volume
+            mountPath: /app/secrets
+          - name: variable-volume
+            mountPath: /app/variables
+            
+      volumes:
+      - name: credentials-volume
+        secret:
+          secretName: website-secret
+          items:
+            - key: token.json
+              path: token.json
+            - key: credentials.json
+              path: credentials.json
+      - name: secret-volume
+        secret:
+          secretName: website-secret
+          items:
+            - key: PAYMEE_API_KEY
+              path: PAYMEE_API_KEY
+      - name: variable-volume
+        configMap:
+          name:  website-configmap
+          items:
+            - key:  PAYMEE_URL
+              path: PAYMEE_URL
+            - key:  MONGO_URI
+              path: MONGO_URI
+            - key:  DB_NAME
+              path: DB_NAME
+            - key:  COLLECTION_NAME_EVENT
+              path: COLLECTION_NAME_EVENT
+            - key:  COLLECTION_NAME_TRANSACTION
+              path: COLLECTION_NAME_TRANSACTION
+            - key:  COLLECTION_NAME_SUBS
+              path: COLLECTION_NAME_SUBS
+            - key:  SERVER_EXTERNAL_URL
+              path: SERVER_EXTERNAL_URL
+              
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website-server-svc
+  namespace: website
+  labels:
+    projectName: website
+spec:
+  ports:
+  - port: 5000
+    protocol: TCP
+  selector:
+    run: website-server
