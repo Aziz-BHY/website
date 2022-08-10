@@ -22,6 +22,8 @@ COPY --from=builder ["/build/apiserver", "/app"]
 
 RUN mkdir /credentials
 
-EXPOSE 5001
+RUN mkdir /views
+
+COPY ./views ./views
 
 ENTRYPOINT ["/app/apiserver"]
