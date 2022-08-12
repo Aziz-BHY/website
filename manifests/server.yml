@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: website-server
-        image: creometry/website:serverV0.1.0
+        image: azizbhy/website-server:1.0.0
         ports:
         - containerPort: 5000
         resources:
