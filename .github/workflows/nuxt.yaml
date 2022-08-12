@@ -4,8 +4,9 @@ on:
   pull_request:
     branches: [ main ]
   push:
-    branches: [36-add-github-actions]
-
+    branches: [main]
+    tags:
+      - 'v*'
 jobs:
   build:
 
@@ -23,17 +24,53 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install --production
+
+    - run: npm install
       working-directory: vue
+
     - run: npm test
       working-directory: vue
-    - uses: mr-smithers-excellent/docker-build-push@v5
-      name: Build & push Docker image
+
+    - name: Generate
+      run: npm run generate
+      working-directory: vue
+
+  deploy-github-actions:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+
+    - name: deploy to github actions
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        image: creometry/website
-        tags: nuxtV0.1.0
-        dockerfile: vue/Dockerfile
-        registry: docker.io
-        directory: vue
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./vue/dist
+
+  deploy-docker:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        images: |
+          creometry/website
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.WEBSITE_DOCKER_HUB }}
+    - name: Build and push
+      uses: docker/build-push-action@v3
+      with:
+        context: vue
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}

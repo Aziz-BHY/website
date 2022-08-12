@@ -5,6 +5,12 @@ import languages from './static/lang/languages'
 import brand from './static/text/brand'
 
 module.exports = {
+ /* 
+  // activate when needing github pages
+  target: 'static',
+  router: {
+    base: '/website/'
+  },*/
   serverMiddleware: {
     '/api': '~/api'
   },
