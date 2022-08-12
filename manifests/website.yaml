@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: site
-        image: creometry/website:nuxtV0.1.0
+        image: azizbhy/website:1.0.0
         ports:
         - containerPort: 8001
         env:
