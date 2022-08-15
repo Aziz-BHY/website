@@ -64,6 +64,16 @@
             {{ $t('common.continue') }}
           </v-btn>
         </div>
+        <div class="btn-area">
+          <v-btn
+            large
+            block
+            color="primary"
+            @click="loginWithKeycloack"
+          >
+            Login With Keycloack
+          </v-btn>
+        </div>
       </v-form>
     </div>
   </AuthFrame>
@@ -99,6 +109,9 @@ export default {
     }
   },
   methods: {
+    loginWithKeycloack(){ 
+      window.location = "https://id.creometry.com/realms/creometry/protocol/openid-connect/auth?client_id=creometry-login-aziz&redirect_uri=http://localhost:8001/en/callback&state=state&response_type=code&scope=openid&nonce=aze"
+    },
     handleSubmit() {
       if (this.$refs.form.validate()) {
         // make post request to go-provisioner to login and 

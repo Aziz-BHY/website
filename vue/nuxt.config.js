@@ -169,6 +169,7 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
+    'cookie-universal-nuxt',
     ['@nuxtjs/html-minifier', { log: 'once', logHtml: true }],
     [
       'nuxt-mq',

@@ -1636,6 +1636,11 @@
   "resolved" "https://registry.npmjs.org/@types/anymatch/-/anymatch-1.3.1.tgz"
   "version" "1.3.1"
 
+"@types/cookie@^0.3.3":
+  "integrity" "sha512-LKVP3cgXBT9RYj+t+9FDKwS5tdI+rPBXaNSkma7hvqy35lc7mAokC2zsqWJH0LaqIt3B962nuYI77hsJoT1gow=="
+  "resolved" "https://registry.npmjs.org/@types/cookie/-/cookie-0.3.3.tgz"
+  "version" "0.3.3"
+
 "@types/eslint@^7.2.6":
   "integrity" "sha512-kUEPnMKrqbtpCq/KTaGFFKAcz6Ethm2EjCoKIDaCmfRBWLbFuTcOJfTlorwbnboXBzahqWLgUp1BQeKHiJzPUQ=="
   "resolved" "https://registry.npmjs.org/@types/eslint/-/eslint-7.2.10.tgz"
@@ -3251,12 +3256,28 @@
   "resolved" "https://registry.npmjs.org/cookie-signature/-/cookie-signature-1.0.6.tgz"
   "version" "1.0.6"
 
+"cookie-universal-nuxt@^2.2.2":
+  "integrity" "sha512-Pr6P5UCzl1EAvPh7z7jFkknBw0KTdykm6gFmPHrH4LV9s3flVmAH0ZP/ZqUXcp6b0SKZfizkn+XR1cO+QinGhQ=="
+  "resolved" "https://registry.npmjs.org/cookie-universal-nuxt/-/cookie-universal-nuxt-2.2.2.tgz"
+  "version" "2.2.2"
+  dependencies:
+    "@types/cookie" "^0.3.3"
+    "cookie-universal" "^2.2.2"
+
+"cookie-universal@^2.2.2":
+  "integrity" "sha512-nUXF6HH2YKbn8vGcdSzWJhjRkDHbnbekuVu2nsRu00zYsX7o/H3xGJRlPVoM4wX/8cpJYpyi9nDt+boER0Wjug=="
+  "resolved" "https://registry.npmjs.org/cookie-universal/-/cookie-universal-2.2.2.tgz"
+  "version" "2.2.2"
+  dependencies:
+    "@types/cookie" "^0.3.3"
+    "cookie" "^0.4.0"
+
 "cookie@^0.3.1":
   "integrity" "sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s="
   "resolved" "https://registry.npmjs.org/cookie/-/cookie-0.3.1.tgz"
   "version" "0.3.1"
 
-"cookie@^0.4.1":
+"cookie@^0.4.0", "cookie@^0.4.1":
   "integrity" "sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA=="
   "resolved" "https://registry.npmjs.org/cookie/-/cookie-0.4.1.tgz"
   "version" "0.4.1"
